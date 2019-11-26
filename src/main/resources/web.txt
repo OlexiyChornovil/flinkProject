@@ -1,0 +1,15 @@
+http://site.com {URL:http://abc.de; URL:http://abc.def.de}
+http://site2.com {URL:http://abc.de; URL:http://abc.def.de}
+http://abc.def.com {URL:http://site.com; URL:http://site2.com}
+http://car.com {URL:http://uni.com; URL:http://abc.de}
+http://abc.def.de {URL:http://car.com; URL:http://car.de}
+http://uni.com {URL:http://uni.de; URL:http://abc.def.de}
+http://site.com {URL:http://abc.de; URL:http://abc.def.de}
+http://site2.com {URL:http://abc.de; URL:http://abc.def.de}
+http://abc.gov {URL:http://abc.def.de; URL:http://car.com}
+http://car.de {URL:http://uni.com; URL:http://site.com}
+http://org.com {URL:http://git.com; URL:http://google.com}
+http://google.com {URL:http://fb.com; URL:http://google.de; URL:http://google.co.uk; URL:http://microsoft.com}
+http://immo.de {URL:http://uni.duss.com; URL:http://duss.com}
+http://duss.com {URL:http://gov.org; URL:http://berlin.com}
+http://gov.com {URL:http://duss.com; URL:http://google.de; URL:http://uni.com; URL:http://microsoft.com}
