@@ -58,7 +58,7 @@ public class TwitterStreamImplementation {
 			//streamSource = env.fromElements(TwitterExampleData.TEXTS);
 		}
 
-
+		/**
 		DataStream<Tuple3<String, Double, Integer>> tweets = streamSource
 	
 				.flatMap(new SelectTweetsWithHashtags())
@@ -78,21 +78,24 @@ public class TwitterStreamImplementation {
 						return new Tuple3<>(key, newEverage, newCount);
 					}
 				});
+		*/
 
-
+		/**
 		DataStream<Tuple3<String, Double, Integer>> tweets2 = streamSource
 
 				.flatMap(new SelectTweetsWithHashtags())
 				.filter(new FilterTweets())
 				.flatMap(new WordCount()).keyBy(0);
-		/*
+		 */
+
 		DataStream<String> tweets = streamSource
 				.flatMap(new Projection());
-		*/
+
 
 		// emit result
 		if (params.has("output")) {
 			tweets.writeAsText(params.get("output"), WriteMode.OVERWRITE).setParallelism(1);
+			tweets.print();
 
 		} else {
 			System.out.println("Printing result to stdout. Use --output to specify output path.");
@@ -117,7 +120,7 @@ public class TwitterStreamImplementation {
 		public FilterTweets() {
 			list = new ArrayList<>();
 			list.add("\"china\"");
-			list.add("\"germany\"");
+			list.add("\"blackfriday\"");
 			}
 
 		@Override
@@ -125,7 +128,7 @@ public class TwitterStreamImplementation {
 			String s = value.f0.toLowerCase();
 			for(String hash : list) {
 				if(s.contains(hash)) {
-					System.out.println(s);
+					//System.out.println(s);
 					return true;
 				}
 			}
@@ -142,7 +145,7 @@ public class TwitterStreamImplementation {
 			if (jsonParser == null) {
 				jsonParser = new ObjectMapper();
 			}
-			System.out.println(value);
+			//System.out.println(value);
 			JsonNode jsonNode = jsonParser.readValue(value, JsonNode.class);
 			boolean hasHashtags = jsonNode.has("entities") && jsonNode.get("entities").has("hashtags");
 			if(hasHashtags) {
