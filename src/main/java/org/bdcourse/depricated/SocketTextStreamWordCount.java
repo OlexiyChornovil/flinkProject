@@ -1,4 +1,4 @@
-package org.bdcourse;
+package org.bdcourse.depricated;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -21,12 +21,10 @@ import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.windowing.assigners.SlidingAlignedProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
-import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
-import org.bdcourse.utils.NetworkSocketText;
+import org.bdcourse.depricated.utils.NetworkSocketText;
 
 /**
  * This example shows an implementation of WordCount with data from a text

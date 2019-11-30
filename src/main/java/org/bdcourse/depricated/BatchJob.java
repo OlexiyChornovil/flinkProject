@@ -1,4 +1,4 @@
-package org.bdcourse;
+package org.bdcourse.depricated;
 
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.DataSet;
@@ -22,10 +22,9 @@ import org.apache.flink.api.java.DataSet;
  */
 
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.operators.DataSource;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.tuple.Tuple4;
-import org.bdcourse.utils.DataUtils;
+import org.bdcourse.depricated.utils.DataUtils;
 
 /**
  * Skeleton for a Flink Batch Job.
@@ -41,7 +40,7 @@ import org.bdcourse.utils.DataUtils;
  * You will find the jar in
  * 		target/flinkexercises-1.0.jar
  * From the CLI you can then run
- * 		./bin/flink run -c org.bdcourse.BatchJob target/flinkexercises-1.0.jar
+ * 		./bin/flink run -c org.bdcourse.depricated.BatchJob target/flinkexercises-1.0.jar
  *
  * For more information on the CLI see:
  *

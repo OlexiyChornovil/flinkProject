@@ -1,10 +1,9 @@
-package org.bdcourse;
+package org.bdcourse.depricated;
 
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -25,7 +24,7 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
  */
 
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.bdcourse.utils.DataUtils;
+import org.bdcourse.depricated.utils.NetworkSocketText;
 
 /**
  * Skeleton for a Flink Streaming Job.
@@ -37,20 +36,32 @@ import org.bdcourse.utils.DataUtils;
  * You can also generate a .jar file that you can submit on your Flink cluster.
  * Just type mvn clean package in the projects root directory. You will find the
  * jar in target/flinkexercises-1.0.jar From the CLI you can then run
- * ./bin/flink run -c org.bdcourse.StreamingJob target/flinkexercises-1.0.jar
+ * ./bin/flink run -c org.bdcourse.depricated.StreamingJob target/flinkexercises-1.0.jar
  *
  * For more information on the CLI see:
  *
  * http://flink.apache.org/docs/latest/apis/cli.html
  */
-public class StreamingJob {
+public class StreamingJobNetworkSocket {
 
 	public static void main(String[] args) throws Exception {
 		// set up the streaming execution environment
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
 		// emulate a stream from a data set
-		DataStream<Tuple3<Long, Double, String>> streamInput = env.fromCollection(DataUtils.getData());
+		DataStream<Tuple3<Long, Double, String>> streamInput = env
+				.socketTextStream("127.0.0.1", NetworkSocketText.SERVER_SOCKET)
+				.map(new MapFunction<String, Tuple3<Long, Double, String>>() {
+					@Override
+					public Tuple3<Long, Double, String> map(String arg0) throws Exception {
+						String[] items = arg0.split(" ");
+						return new Tuple3<>(
+								Long.parseLong(items[0]),
+								Double.parseDouble(items[1]),
+								items[2]
+								);
+					}
+				});
 
 		// print input
 		streamInput.print();

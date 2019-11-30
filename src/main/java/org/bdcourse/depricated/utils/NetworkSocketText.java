@@ -1,4 +1,4 @@
-package org.bdcourse.utils;
+package org.bdcourse.depricated.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

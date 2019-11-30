@@ -1,4 +1,4 @@
-package org.bdcourse.utils;
+package org.bdcourse.depricated.utils;
 
 import java.util.ArrayList;
 import java.util.List;

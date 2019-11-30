@@ -1,8 +1,7 @@
-package org.bdcourse.utils;
+package org.bdcourse.depricated.utils;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class tools {
 
