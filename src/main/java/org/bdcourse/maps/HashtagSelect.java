@@ -14,7 +14,9 @@ public class HashtagSelect implements FlatMapFunction<List<String>, Tuple2<Strin
     public HashtagSelect() {
         list = new ArrayList<>();
         list.add("\"china\"");
-        list.add("\"blackfriday\"");
+        list.add("\"russia\"");
+        list.add("\"usa\"");
+        list.add("\"germany\"");
     }
 
     @Override
@@ -22,7 +24,7 @@ public class HashtagSelect implements FlatMapFunction<List<String>, Tuple2<Strin
         String main_hash = null;
         for(String hash : list) {
             for(String s: value) {
-                if(s.contains(hash)){
+                if(s.toLowerCase().contains(hash)){
                     main_hash = hash;
                 }
             }

@@ -12,7 +12,9 @@ public class FilterListsFromList implements FilterFunction<List<String>> {
     public FilterListsFromList() {
         list = new ArrayList<>();
         list.add("\"china\"");
-        list.add("\"blackfriday\"");
+        list.add("\"russia\"");
+        list.add("\"usa\"");
+        list.add("\"germany\"");
     }
 
     @Override
@@ -20,7 +22,7 @@ public class FilterListsFromList implements FilterFunction<List<String>> {
         String main_hash = null;
         for(String hash : list) {
             for(String s: value) {
-                if(s.contains(hash)){
+                if(s.toLowerCase().contains(hash)){
                     return true;
                 }
             }
