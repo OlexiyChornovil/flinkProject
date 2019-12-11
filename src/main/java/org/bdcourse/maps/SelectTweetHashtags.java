@@ -6,10 +6,13 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.JsonNode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.util.Collector;
 
-public class SelectTweetsWithHashtags implements FlatMapFunction<String, Tuple2<String, String>> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SelectTweetHashtags implements FlatMapFunction<String, List<String>> {
     private transient ObjectMapper jsonParser;
     @Override
-    public void flatMap(String value, Collector<Tuple2<String, String>> out) throws Exception {
+    public void flatMap(String value, Collector<List<String>> out) throws Exception {
 
         if (jsonParser == null) {
             jsonParser = new ObjectMapper();
@@ -18,14 +21,13 @@ public class SelectTweetsWithHashtags implements FlatMapFunction<String, Tuple2<
         boolean hasHashtags = jsonNode.has("entities") && jsonNode.get("entities").has("hashtags");
         if(hasHashtags) {
             JsonNode tmp = jsonNode.get("entities").get("hashtags");
+            List<String> collector = new ArrayList<>();
             for (JsonNode jsonNode2 : tmp) {
                 if(jsonNode2.has("text")) {
-                    String hashTagName = jsonNode2.get("text").toString();
-                    String hashTagText = jsonNode.get("text").toString();
-                    out.collect(new Tuple2<String, String>(hashTagName, hashTagText));
+                    collector.add(jsonNode2.get("text").toString());
                 }
             }
+            out.collect(collector);
         }
     }
-
 }

@@ -85,6 +85,7 @@ public class TwitterStreamImplementation {
 		*/
 
 
+		/*
 		DataStream<Tuple3<String, Double, Integer>> tweets = streamSource
 
 				.flatMap(new SelectTweetsWithHashtags())
@@ -95,6 +96,11 @@ public class TwitterStreamImplementation {
 		DataStream<String> tweets = streamSource
 				.flatMap(new Projection());
 		*/
+
+		DataStream<Tuple2<String, String>> tweets = streamSource
+
+				.flatMap(new SelectTweetsWithHashtags());
+
 
 		// emit result
 		if (params.has("output")) {

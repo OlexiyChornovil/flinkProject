@@ -6,10 +6,10 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.JsonNode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.util.Collector;
 
-public class SelectTweetsWithHashtags implements FlatMapFunction<String, Tuple2<String, String>> {
+public class SelectHashtagWithRetweetCount implements FlatMapFunction<String, Tuple2<String, Integer>> {
     private transient ObjectMapper jsonParser;
     @Override
-    public void flatMap(String value, Collector<Tuple2<String, String>> out) throws Exception {
+    public void flatMap(String value, Collector<Tuple2<String, Integer>> out) throws Exception {
 
         if (jsonParser == null) {
             jsonParser = new ObjectMapper();
@@ -21,8 +21,8 @@ public class SelectTweetsWithHashtags implements FlatMapFunction<String, Tuple2<
             for (JsonNode jsonNode2 : tmp) {
                 if(jsonNode2.has("text")) {
                     String hashTagName = jsonNode2.get("text").toString();
-                    String hashTagText = jsonNode.get("text").toString();
-                    out.collect(new Tuple2<String, String>(hashTagName, hashTagText));
+                    Integer replyCount = jsonNode.get("retweeted_status").get("retweet_count").intValue();
+                    out.collect(new Tuple2<String, Integer>(hashTagName, replyCount));
                 }
             }
         }
