@@ -7,14 +7,13 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.twitter.TwitterSource;
 import org.bdcourse.filters.FilterFavorited;
-import org.bdcourse.filters.FilterRetweets;
 import org.bdcourse.filters.FilterTweetsWithRetweetsFromList;
+import org.bdcourse.maps.Projection;
 import org.bdcourse.maps.SelectHashtagWithLikeCount;
-import org.bdcourse.maps.SelectHashtagWithRetweetCount;
 import org.bdcourse.source.TwitterSourceDelivery;
 
-public class TwitterStreamLikeCount {
-    public static void main(String[] args) throws Exception{
+public class BatchCollector {
+    public static void main(String[] args) throws Exception {
         ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
         TwitterSource twitterSource = TwitterSourceDelivery.getTwitterConnection();
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -22,12 +21,10 @@ public class TwitterStreamLikeCount {
         DataStream<String> streamSource = null;
         streamSource = env.addSource(twitterSource);
 
-        DataStream<Tuple2<String, Integer>>tweets = streamSource
-                .filter(new FilterFavorited())
-                .flatMap(new SelectHashtagWithLikeCount())
-                .filter(new FilterTweetsWithRetweetsFromList());
+        DataStream<String> tweets = streamSource
+                .flatMap(new Projection());
 
-        tweets.writeAsText(jobParameters.get("TwitterStreamLikeCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        tweets.writeAsText(jobParameters.get("BatchCollectorOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         tweets.print();
         env.execute();
     }

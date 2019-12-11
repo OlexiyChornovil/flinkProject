@@ -86,7 +86,7 @@ public class TwitterStreamWordCount {
 
 
 
-		tweets.writeAsText(jobParameters.get("output"), WriteMode.OVERWRITE).setParallelism(1);
+		tweets.writeAsText(jobParameters.get("TwitterStreamWordCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
 		env.execute();
 	}
