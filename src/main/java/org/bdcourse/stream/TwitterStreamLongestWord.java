@@ -41,7 +41,7 @@ public class TwitterStreamLongestWord {
 				.flatMap(new LongestWord());
 
 
-		tweets.writeAsText(jobParameters.get("TwitterStreamWordCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
+		tweets.writeAsText(jobParameters.get("TwitterStreamLongestWordOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
 		env.execute();
 	}
