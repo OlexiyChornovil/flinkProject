@@ -32,11 +32,17 @@ public class CompareHashtagCount {
         ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
         DataStream<Tuple2<String, Integer>> batch = batchProcess(jobParameters);
 
-        TwitterSource twitterSource = TwitterSourceDelivery.getTwitterConnection();
-        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(1);
         DataStream<String> streamSource = null;
-        streamSource = env.addSource(twitterSource);
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        if(jobParameters.get("debug").equals("true")){
+            System.out.println("DEBUG ON");
+            streamSource = env.readTextFile(jobParameters.get("TwitterBatchLikeCountInput"));
+        }
+        else{
+            TwitterSource twitterSource = TwitterSourceDelivery.getTwitterConnection();
+            env.setParallelism(1);
+            streamSource = env.addSource(twitterSource);
+        }
 
         DataStream<Tuple2<String, Integer>> stream = streamSource
                 .filter(new TweetContainingHashtag())
