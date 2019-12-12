@@ -42,49 +42,26 @@ public class TwitterStreamWordCount {
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
-
 		ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
-		TwitterSource twitterSource = TwitterSourceDelivery.getTwitterConnection();
-		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-		env.setParallelism(1);
+
 		DataStream<String> streamSource = null;
-		streamSource = env.addSource(twitterSource);
+		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+		if(jobParameters.get("debug").equals("true")){
+			System.out.println("DEBUG ON");
+			streamSource = env.readTextFile(jobParameters.get("TwitterBatchLikeCountInput"));
+		}
+		else{
+			TwitterSource twitterSource = TwitterSourceDelivery.getTwitterConnection();
+			env.setParallelism(1);
+			streamSource = env.addSource(twitterSource);
+		}
+
 
 		DataStream<Tuple2<String, Integer>> tweets = streamSource
 				.filter(new TweetContainingHashtag())
 				.flatMap(new SelectTweetsWithHashtags())
 				.filter(new FilterTweetsFromList())
 				.flatMap(new WordCount());
-
-		/*
-		List<HttpHost> httpHosts = new ArrayList<>();
-		httpHosts.add(new HttpHost("127.0.0.1", 9200, "http"));
-		httpHosts.add(new HttpHost("10.2.3.1", 9200, "http"));
-
-		// use a ElasticsearchSink.Builder to create an ElasticsearchSink
-		ElasticsearchSink.Builder<String> esSinkBuilder = new ElasticsearchSink.Builder<>(
-		httpHosts,
-		new ElasticsearchSinkFunction<String>() {
-			public IndexRequest createIndexRequest(String element) {
-				Map<String, String> json = new HashMap<>();
-				json.put("data", element);
-
-				return Requests.indexRequest()
-						.index("my-index")
-						.type("my-type")
-						.source(json);
-			}
-
-			@Override
-			public void process(String element, RuntimeContext ctx, RequestIndexer indexer) {
-				indexer.add(createIndexRequest(element));
-			}
-		});
-		tweets.addSink(esSinkBuilder.build());
-
-		 */
-
-
 
 		tweets.writeAsText(jobParameters.get("TwitterStreamWordCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
