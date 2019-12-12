@@ -19,4 +19,12 @@ public class TwitterHashtagsListCreator {
         s.close();
         return list;
     }
+
+    public static void main(String[] args) throws IOException {
+        TwitterHashtagsListCreator t  = new TwitterHashtagsListCreator();
+        List<String> s = t.getList();
+        List<String> list = new ArrayList<>();
+        list.add("\"china\"");
+        System.out.println(list.equals(s));
+    }
 }
