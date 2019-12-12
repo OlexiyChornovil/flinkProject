@@ -1,32 +1,26 @@
 package org.bdcourse.compare;
 
-import org.apache.flink.api.common.accumulators.AverageAccumulator;
-import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.common.functions.GroupReduceFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
-import org.apache.flink.api.java.DataSet;
-import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction;
-import org.apache.flink.streaming.api.functions.windowing.WindowFunction;
-import org.apache.flink.streaming.api.windowing.windows.Window;
 import org.apache.flink.streaming.connectors.twitter.TwitterSource;
 import org.apache.flink.util.Collector;
+import org.bdcourse.filters.FilterFavorited;
 import org.bdcourse.filters.FilterListsFromList;
+import org.bdcourse.filters.FilterTweetsWithRetweetsFromList;
 import org.bdcourse.filters.TweetContainingHashtag;
 import org.bdcourse.maps.HashtagSelect;
+import org.bdcourse.maps.SelectHashtagWithLikeCount;
 import org.bdcourse.maps.SelectTweetHashtags;
 import org.bdcourse.source.TwitterSourceDelivery;
 
-import java.io.IOException;
-import java.util.List;
+public class CompareLikeCount {
 
-public class CompareHashtagCount {
     public static void main(String[] args) throws Exception {
 
         ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
@@ -39,10 +33,9 @@ public class CompareHashtagCount {
         streamSource = env.addSource(twitterSource);
 
         DataStream<Tuple2<String, Integer>> stream = streamSource
-                .filter(new TweetContainingHashtag())
-                .flatMap(new SelectTweetHashtags())
-                .filter(new FilterListsFromList())
-                .flatMap(new HashtagSelect());
+                .filter(new FilterFavorited())
+                .flatMap(new SelectHashtagWithLikeCount())
+                .filter(new FilterTweetsWithRetweetsFromList());;
 
         stream.connect(batch)
                 .keyBy(0, 0)
@@ -66,18 +59,16 @@ public class CompareHashtagCount {
     private static DataStream<Tuple2<String, Integer>> batchProcess(ParameterTool jobParameters) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        DataStream<String> tweetText = env.readTextFile(jobParameters.get("TwitterBatchHashtagCountInput"));
+        DataStream<String> tweetText = env.readTextFile(jobParameters.get("TwitterBatchLikeCountInput"));
         DataStream<Tuple2<String, Integer>> tweets = tweetText
-                .filter(new TweetContainingHashtag())
-                .flatMap(new SelectTweetHashtags())
-                .filter(new FilterListsFromList())
-                .flatMap(new HashtagSelect())
-
+                .filter(new FilterFavorited())
+                .flatMap(new SelectHashtagWithLikeCount())
+                .filter(new FilterTweetsWithRetweetsFromList())
                 .flatMap(new FlatMapFunction<Tuple2<String, Integer>, Tuple3<String, Integer, Integer>>() {
                     @Override
                     public void flatMap(Tuple2<String, Integer> value, Collector<Tuple3<String, Integer, Integer>> out)
                             throws Exception {
-                            out.collect(new Tuple3<String, Integer, Integer>(value.f0, value.f1, 1));
+                        out.collect(new Tuple3<String, Integer, Integer>(value.f0, value.f1, 1));
                     }
                 })
                 .keyBy(0)

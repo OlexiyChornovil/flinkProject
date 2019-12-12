@@ -6,18 +6,12 @@ import org.apache.flink.core.fs.FileSystem.WriteMode;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.twitter.TwitterSource;
-import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 import org.bdcourse.filters.FilterListsFromList;
-import org.bdcourse.filters.FilterTweetsFromList;
 import org.bdcourse.filters.TweetContainingHashtag;
 import org.bdcourse.maps.HashtagSelect;
 import org.bdcourse.maps.SelectTweetHashtags;
-import org.bdcourse.maps.SelectTweetsWithHashtags;
-import org.bdcourse.maps.WordCountGetNumbers;
 import org.bdcourse.source.TwitterSourceDelivery;
 
-import java.io.IOException;
-import java.util.List;
 
 public class TwitterStreamHashtagCount {
 

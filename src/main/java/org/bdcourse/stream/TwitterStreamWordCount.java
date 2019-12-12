@@ -50,7 +50,7 @@ public class TwitterStreamWordCount {
 		DataStream<String> streamSource = null;
 		streamSource = env.addSource(twitterSource);
 
-		DataStream<Tuple2<String, Double>> tweets = streamSource
+		DataStream<Tuple2<String, Integer>> tweets = streamSource
 				.filter(new TweetContainingHashtag())
 				.flatMap(new SelectTweetsWithHashtags())
 				.filter(new FilterTweetsFromList())

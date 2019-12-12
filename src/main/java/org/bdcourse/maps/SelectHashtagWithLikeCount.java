@@ -14,6 +14,7 @@ public class SelectHashtagWithLikeCount implements FlatMapFunction<String, Tuple
         if (jsonParser == null) {
             jsonParser = new ObjectMapper();
         }
+
         JsonNode jsonNode = jsonParser.readValue(value, JsonNode.class);
         boolean hasHashtags = jsonNode.has("entities") && jsonNode.get("entities").has("hashtags");
         if(hasHashtags) {
@@ -23,6 +24,7 @@ public class SelectHashtagWithLikeCount implements FlatMapFunction<String, Tuple
                     String hashTagName = jsonNode2.get("text").toString();
                     Integer replyCount = jsonNode.get("favorite_count").intValue();
                     out.collect(new Tuple2<String, Integer>(hashTagName, replyCount));
+
                 }
             }
         }

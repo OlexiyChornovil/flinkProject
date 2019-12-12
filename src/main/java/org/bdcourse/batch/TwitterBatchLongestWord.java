@@ -32,7 +32,7 @@ public class TwitterBatchLongestWord {
 
 		tweets.writeAsText(jobParameters.get("TwitterStreamWordCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
-		env.execute();
+		//env.execute();
 	}
 
 }

@@ -22,7 +22,9 @@ public class SelectHashtagWithRetweetCount implements FlatMapFunction<String, Tu
                 if(jsonNode2.has("text")) {
                     String hashTagName = jsonNode2.get("text").toString();
                     Integer replyCount = jsonNode.get("retweeted_status").get("retweet_count").intValue();
-                    out.collect(new Tuple2<String, Integer>(hashTagName, replyCount));
+                    Tuple2<String, Integer> output = new Tuple2<String, Integer>(hashTagName, replyCount);
+                    //System.out.println(output);
+                    out.collect(output);
                 }
             }
         }

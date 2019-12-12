@@ -24,7 +24,7 @@ public class TwitterBatchWordCount {
 
 		DataSet<String> tweetText = env.readTextFile(jobParameters.get("TwitterBatchWordCountInput"));
 
-		DataSet<Tuple2<String, Double>> tweets = tweetText
+		DataSet<Tuple2<String, Integer>> tweets = tweetText
 				.filter(new TweetContainingHashtag())
 				.flatMap(new SelectTweetsWithHashtags())
 				.filter(new FilterTweetsFromList())
@@ -33,7 +33,7 @@ public class TwitterBatchWordCount {
 
 		tweets.writeAsText(jobParameters.get("TwitterStreamWordCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
-		env.execute();
+		//env.execute();
 	}
 
 }

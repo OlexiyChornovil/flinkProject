@@ -3,20 +3,19 @@ package org.bdcourse.maps;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.util.Collector;
+import org.bdcourse.tools.TwitterHashtagsListCreator;
 import scala.xml.Null;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HashtagSelect implements FlatMapFunction<List<String>, Tuple2<String, Integer>> {
     private List<String> list;
 
-    public HashtagSelect() {
-        list = new ArrayList<>();
-        list.add("\"china\"");
-        list.add("\"russia\"");
-        list.add("\"usa\"");
-        list.add("\"germany\"");
+    public HashtagSelect() throws IOException {
+        TwitterHashtagsListCreator t = new TwitterHashtagsListCreator();
+        list = t.getList();
     }
 
     @Override
@@ -29,6 +28,13 @@ public class HashtagSelect implements FlatMapFunction<List<String>, Tuple2<Strin
                 }
             }
         }
-        out.collect(new Tuple2<String, Integer>(main_hash, list.size()));
+        Tuple2<String, Integer> output = new Tuple2<String, Integer>(main_hash, value.size());
+        /*
+        System.out.println("------");
+        System.out.println(output);
+        System.out.println("------");
+         */
+
+        out.collect(output);
     }
 }

@@ -16,6 +16,7 @@ public class FilterRetweets implements FilterFunction<String> {
             jsonParser = new ObjectMapper();
         }
         JsonNode jsonNode = jsonParser.readValue(value, JsonNode.class);
-        return jsonNode.has("retweeted_status");
+        Boolean output = jsonNode.has("retweeted_status");
+        return output;
     }
 }

@@ -29,6 +29,6 @@ public class TwitterBatchRetweetCount {
 
         tweets.writeAsText(jobParameters.get("TwitterStreamRetweetCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         tweets.print();
-        env.execute();
+        //env.execute();
     }
 }
