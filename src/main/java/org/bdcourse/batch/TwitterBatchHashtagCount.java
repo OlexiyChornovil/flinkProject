@@ -14,10 +14,18 @@ import org.bdcourse.maps.HashtagSelect;
 import org.bdcourse.maps.SelectTweetHashtags;
 import org.bdcourse.source.TwitterSourceDelivery;
 
+import java.io.IOException;
+
 public class TwitterBatchHashtagCount {
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
+		TwitterBatchHashtagCount t = new TwitterBatchHashtagCount();
+		ExecutionEnvironment env = t.getPipe();
+		env.execute();
+	}
+
+	public ExecutionEnvironment getPipe() throws Exception {
 
 		ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
@@ -33,7 +41,7 @@ public class TwitterBatchHashtagCount {
 
 		tweets.writeAsText(jobParameters.get("TwitterStreamHashtagCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
-		env.execute();
+		return env;
 	}
 
 }

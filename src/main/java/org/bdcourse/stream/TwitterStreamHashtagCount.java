@@ -6,6 +6,7 @@ import org.apache.flink.core.fs.FileSystem.WriteMode;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.twitter.TwitterSource;
+import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 import org.bdcourse.filters.FilterListsFromList;
 import org.bdcourse.filters.FilterTweetsFromList;
 import org.bdcourse.filters.TweetContainingHashtag;
@@ -15,6 +16,7 @@ import org.bdcourse.maps.SelectTweetsWithHashtags;
 import org.bdcourse.maps.WordCountGetNumbers;
 import org.bdcourse.source.TwitterSourceDelivery;
 
+import java.io.IOException;
 import java.util.List;
 
 public class TwitterStreamHashtagCount {
@@ -22,6 +24,11 @@ public class TwitterStreamHashtagCount {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
 
+		TwitterStreamHashtagCount t = new TwitterStreamHashtagCount();
+		StreamExecutionEnvironment env = t.getPipe();
+		env.execute();
+	}
+	public StreamExecutionEnvironment getPipe() throws Exception {
 		ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
 		TwitterSource twitterSource = TwitterSourceDelivery.getTwitterConnection();
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -36,7 +43,7 @@ public class TwitterStreamHashtagCount {
 				.flatMap(new HashtagSelect());
 		tweets.writeAsText(jobParameters.get("TwitterStreamHashtagCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
-		env.execute();
+		return env;
 	}
 
 }
