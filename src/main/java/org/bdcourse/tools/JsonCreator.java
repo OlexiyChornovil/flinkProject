@@ -45,7 +45,7 @@ public class JsonCreator {
             entities.put("retweeted_status", retw);
 
             String tmp = "";
-            for (int j=0; j < 20; j++){
+            for (int j=0; j < getRandomNumberInRange(0, 40); j++){
                 String txt = getAlphaNumericString(getRandomNumberInRange(0, 20));
 
                 tmp = tmp.concat(txt);
@@ -80,7 +80,7 @@ public class JsonCreator {
             entities.put("retweeted_status", retw);
 
             String tmp = "";
-            for (int j=0; j < 20; j++){
+            for (int j=0; j < getRandomNumberInRange(0, 40); j++){
                 String txt = getAlphaNumericString(getRandomNumberInRange(0, 20));
 
                 tmp = tmp.concat(txt);
@@ -120,7 +120,7 @@ public class JsonCreator {
             entities.put("retweeted_status", retw);
 
             String tmp = "";
-            for (int j=0; j < 20; j++){
+            for (int j=0; j < getRandomNumberInRange(0, 40); j++){
                 String txt = getAlphaNumericString(getRandomNumberInRange(0, 20));
 
                 tmp = tmp.concat(txt);
@@ -151,7 +151,7 @@ public class JsonCreator {
             entities.put("retweeted_status", retw);
 
             String tmp = "";
-            for (int j=0; j < 20; j++){
+            for (int j=0; j < getRandomNumberInRange(0, 40); j++){
                 String txt = getAlphaNumericString(getRandomNumberInRange(0, 20));
 
                 tmp = tmp.concat(txt);
@@ -188,7 +188,7 @@ public class JsonCreator {
             entities.put("retweeted_status", retw);
 
             String tmp = "";
-            for (int j=0; j < 20; j++){
+            for (int j=0; j < getRandomNumberInRange(0, 40); j++){
                 String txt = getAlphaNumericString(getRandomNumberInRange(0, 20));
 
                 tmp = tmp.concat(txt);

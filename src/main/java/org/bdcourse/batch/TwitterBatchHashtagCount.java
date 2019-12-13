@@ -11,13 +11,11 @@ import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFuncti
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.streaming.connectors.twitter.TwitterSource;
-import org.bdcourse.depricated.CompareSumHashtags;
 import org.bdcourse.filters.FilterListsFromList;
 import org.bdcourse.filters.TweetContainingHashtag;
 import org.bdcourse.maps.HashtagSelect;
 import org.bdcourse.maps.SelectTweetHashtags;
 import org.apache.flink.util.Collector;
-
 import org.bdcourse.source.TwitterSourceDelivery;
 
 import java.io.IOException;
