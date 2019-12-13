@@ -6,11 +6,9 @@ import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
@@ -19,14 +17,11 @@ import org.apache.flink.util.Collector;
 import org.bdcourse.filters.FilterListsFromListForRegression;
 import org.bdcourse.maps.HashtagWordCount;
 import org.bdcourse.maps.SelectTweetTextWithHashtagList;
-import org.bdcourse.maps.SelectTweetsWithHashtags;
 import org.bdcourse.source.TwitterSourceDelivery;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
-public class RegressionHashtagCountPerWordCount {
+public class RegressionHashtagCountPerWordCountv2 {
     public static void main(String[] args) throws Exception {
         ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
         List<Tuple2<Integer, Integer>> batchData = getBatchResults(jobParameters);
@@ -65,8 +60,23 @@ public class RegressionHashtagCountPerWordCount {
                 .flatMap(new HashtagWordCount())
 
                 .process(new ProcessFunction<Tuple2<Integer, Integer>, Tuple4<Integer, Integer, Integer, Double>>() {
+                    private ValueState<SimpleRegression> currentState;
+
+
+                    @Override
+                    public void open(Configuration conf){
+                        currentState = getRuntimeContext().getState(
+                                new ValueStateDescriptor<>("state", SimpleRegression.class));
+                    }
+
                     @Override
                     public void processElement(Tuple2<Integer, Integer> value, Context context, Collector<Tuple4<Integer, Integer, Integer, Double>> out) throws Exception {
+
+                        if (currentState.value() == null){
+                            currentState.update(regression);
+                        }
+                        Double inter = regression.getIntercept();
+                        Double sl = regression.getSlope();
 
                         Double tmp = (intercept + slope * value.f0);
                         Integer predictionpoint = tmp.intValue();
@@ -76,7 +86,7 @@ public class RegressionHashtagCountPerWordCount {
                         out.collect(new Tuple4<Integer, Integer, Integer, Double>(value.f0, value.f1, predictionpoint, tmp));
                     }
                 });
-        stream.writeAsText(jobParameters.get("RegressionHashtagCountPerWordCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+
         stream.print();
         env.execute();
 

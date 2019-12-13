@@ -5,15 +5,11 @@ import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.utils.ParameterTool;
-import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.twitter.TwitterSource;
-import org.bdcourse.filters.FilterListsFromList;
 import org.bdcourse.filters.FilterTweetsFromList;
 import org.bdcourse.filters.TweetContainingHashtag;
-import org.bdcourse.maps.HashtagSelect;
-import org.bdcourse.maps.SelectTweetHashtags;
 import org.bdcourse.maps.SelectTweetsWithHashtags;
 import org.bdcourse.maps.WordCount;
 import org.bdcourse.process.MovingAverageProcess;
@@ -21,7 +17,7 @@ import org.bdcourse.source.TwitterSourceDelivery;
 
 import java.util.List;
 
-public class MovingAverageWordCount {
+public class MovingAverageWordCountv2 {
     public static void main(String[] args) throws Exception {
         ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
         List<Tuple2<String, Integer>> batchData = getBatchResults(jobParameters);
@@ -52,7 +48,7 @@ public class MovingAverageWordCount {
                 .flatMap(new WordCount())
 
                 .process(new MovingAverageProcess(amount, sum));
-        stream.writeAsText(jobParameters.get("MovingAverageWordCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+
         stream.print();
         env.execute();
 

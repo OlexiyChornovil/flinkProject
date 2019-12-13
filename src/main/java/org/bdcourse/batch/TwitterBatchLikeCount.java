@@ -25,7 +25,7 @@ public class TwitterBatchLikeCount {
                 .flatMap(new SelectHashtagWithLikeCount())
                 .filter(new FilterTweetsWithRetweetsFromList());
 
-        //tweets.writeAsText(jobParameters.get("TwitterStreamLikeCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        tweets.writeAsText(jobParameters.get("TwitterBatchLikeCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         tweets.print();
         //env.execute();
     }

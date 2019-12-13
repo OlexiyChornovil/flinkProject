@@ -27,7 +27,7 @@ public class TwitterBatchRetweetCount {
                 .flatMap(new SelectHashtagWithRetweetCount())
                 .filter(new FilterTweetsWithRetweetsFromList());
 
-        tweets.writeAsText(jobParameters.get("TwitterStreamRetweetCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        tweets.writeAsText(jobParameters.get("TwitterBatchRetweetCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         tweets.print();
         //env.execute();
     }

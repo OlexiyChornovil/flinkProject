@@ -5,11 +5,16 @@ import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.GroupReduceFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
+import org.apache.flink.api.common.state.State;
+import org.apache.flink.api.common.state.ValueState;
+import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.utils.ParameterTool;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction;
@@ -50,7 +55,7 @@ public class CompareHashtagCount {
                 .filter(new FilterListsFromList())
                 .flatMap(new HashtagSelect());
 
-        stream.connect(batch)
+        DataStream<Tuple2<String, Integer>> finalstream =  stream.connect(batch)
                 .keyBy(0, 0)
                 .flatMap(new RichCoFlatMapFunction<Tuple2<String, Integer>, Tuple2<String, Integer>, Tuple2<String, Integer>>() {
                     private Integer batchValue=0;
@@ -58,13 +63,20 @@ public class CompareHashtagCount {
                     @Override
                     public void flatMap2(Tuple2<String, Integer> stringIntegerTuple2, Collector<Tuple2<String, Integer>> collector) throws Exception {
                         batchValue = stringIntegerTuple2.f1;
+
+
                     }
 
                     @Override
                     public void flatMap1(Tuple2<String, Integer> stringIntegerTuple2, Collector<Tuple2<String, Integer>> collector) throws Exception {
-                        collector.collect(new Tuple2<String, Integer>(stringIntegerTuple2.f0, stringIntegerTuple2.f1-batchValue));
+
+                            Tuple2<String, Integer> output = new Tuple2<String, Integer>(stringIntegerTuple2.f0, stringIntegerTuple2.f1 - batchValue);
+                            collector.collect(output);
                     }
-                }).print();
+                });
+        finalstream.print();
+        finalstream.writeAsText(jobParameters.get("CompareHashtagCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+
         env.execute();
 
     }

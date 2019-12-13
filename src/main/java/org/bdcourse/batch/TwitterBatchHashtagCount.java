@@ -45,7 +45,7 @@ public class TwitterBatchHashtagCount {
 				.flatMap(new HashtagSelect())
 				;
 
-		tweets.writeAsText(jobParameters.get("TwitterStreamHashtagCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
+		tweets.writeAsText(jobParameters.get("TwitterBatchHashtagCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
 		return env;
 	}

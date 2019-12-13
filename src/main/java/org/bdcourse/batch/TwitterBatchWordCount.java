@@ -31,7 +31,7 @@ public class TwitterBatchWordCount {
 				.flatMap(new WordCount());
 
 
-		tweets.writeAsText(jobParameters.get("TwitterStreamWordCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
+		tweets.writeAsText(jobParameters.get("TwitterBatchWordCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
 		//env.execute();
 	}
