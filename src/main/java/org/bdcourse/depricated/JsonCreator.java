@@ -1,4 +1,4 @@
-package org.bdcourse.tools;
+package org.bdcourse.depricated;
 
 import org.apache.sling.commons.json.JSONArray;
 import org.apache.sling.commons.json.JSONException;

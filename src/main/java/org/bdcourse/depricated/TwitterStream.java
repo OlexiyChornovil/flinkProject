@@ -1,4 +1,4 @@
-package org.bdcourse;
+package org.bdcourse.depricated;
 
 import org.bdcourse.stream.TwitterStreamWordCount;
 
