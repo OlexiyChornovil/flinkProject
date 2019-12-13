@@ -13,6 +13,7 @@ import org.bdcourse.filters.TweetContainingHashtag;
 import org.bdcourse.maps.HashtagSelect;
 import org.bdcourse.maps.SelectTweetHashtags;
 import org.bdcourse.process.MovingAverageProcess;
+import org.bdcourse.process.MovingAverageProcessv2;
 import org.bdcourse.source.TwitterSourceDelivery;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class MovingAverageHashtagCountv2 {
                 .filter(new FilterListsFromList())
                 .flatMap(new HashtagSelect())
 
-                .process(new MovingAverageProcess(amount, sum));
+                .process(new MovingAverageProcessv2());
 
         //stream.writeAsText(jobParameters.get("MovingAverageHashtagCount"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         stream.print();

@@ -13,6 +13,7 @@ import org.bdcourse.filters.TweetContainingHashtag;
 import org.bdcourse.maps.SelectTweetsWithHashtags;
 import org.bdcourse.maps.WordCount;
 import org.bdcourse.process.MovingAverageProcess;
+import org.bdcourse.process.MovingAverageProcessv2;
 import org.bdcourse.source.TwitterSourceDelivery;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class MovingAverageWordCountv2 {
                 .filter(new FilterTweetsFromList())
                 .flatMap(new WordCount())
 
-                .process(new MovingAverageProcess(amount, sum));
+                .process(new MovingAverageProcessv2());
 
         stream.print();
         env.execute();
