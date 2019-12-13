@@ -55,13 +55,10 @@ public class CompareLikeCount {
                     @Override
                     public void flatMap2(Tuple2<String, Integer> stringIntegerTuple2, Collector<Tuple2<String, Integer>> collector) throws Exception {
                         batchValue = stringIntegerTuple2.f1;
-
-
                     }
 
                     @Override
                     public void flatMap1(Tuple2<String, Integer> stringIntegerTuple2, Collector<Tuple2<String, Integer>> collector) throws Exception {
-
                         Tuple2<String, Integer> output = new Tuple2<String, Integer>(stringIntegerTuple2.f0, stringIntegerTuple2.f1 - batchValue);
                         collector.collect(output);
                     }

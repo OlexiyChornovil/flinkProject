@@ -13,7 +13,6 @@ public class TweetContainingHashtag  implements FilterFunction<String> {
         if (jsonParser == null) {
             jsonParser = new ObjectMapper();
         }
-        //System.out.println(value);
         JsonNode jsonNode = jsonParser.readValue(value, JsonNode.class);
         boolean hasHashtags = jsonNode.has("entities") && jsonNode.get("entities").has("hashtags");
         if(hasHashtags) {

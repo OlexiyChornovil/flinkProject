@@ -38,14 +38,20 @@ public class CompareLikeCountv2 {
             streamSource = env.addSource(twitterSource);
         }
 
-        DataStream<Tuple2<String, Integer>> stream = streamSource
+        DataStream<Tuple3<String, Integer, Integer>> stream = streamSource
                 .filter(new FilterFavorited())
                 .flatMap(new SelectHashtagWithLikeCount())
-                .filter(new FilterTweetsWithRetweetsFromList());;
+                .filter(new FilterTweetsWithRetweetsFromList())
+                .flatMap(new FlatMapFunction<Tuple2<String, Integer>, Tuple3<String, Integer, Integer>>() {
+                    @Override
+                    public void flatMap(Tuple2<String, Integer> stringIntegerTuple2, Collector<Tuple3<String, Integer, Integer>> collector) throws Exception {
+                        collector.collect(new Tuple3<String, Integer, Integer>(stringIntegerTuple2.f0, stringIntegerTuple2.f1, 1));
+                    }
+                });
 
         DataStream<Tuple2<String, Integer>> finalstream =  stream.connect(batch)
                 .keyBy(0, 0)
-                .flatMap(new RichCoFlatMapFunction<Tuple2<String, Integer>, Tuple2<String, Integer>, Tuple2<String, Integer>>() {
+                .flatMap(new RichCoFlatMapFunction<Tuple3<String, Integer, Integer>, Tuple2<String, Integer>, Tuple2<String, Integer>>() {
                     private ValueState<Integer> currentState;
 
 
@@ -59,14 +65,12 @@ public class CompareLikeCountv2 {
                     public void flatMap2(Tuple2<String, Integer> stringIntegerTuple2, Collector<Tuple2<String, Integer>> collector) throws Exception {
                         Integer batchValue = stringIntegerTuple2.f1;
                         currentState.update(batchValue);
-
                     }
 
                     @Override
-                    public void flatMap1(Tuple2<String, Integer> stringIntegerTuple2, Collector<Tuple2<String, Integer>> collector) throws Exception {
+                    public void flatMap1(Tuple3<String, Integer, Integer> stringIntegerTuple2, Collector<Tuple2<String, Integer>> collector) throws Exception {
                         if (currentState.value() != null) {
                             Tuple2<String, Integer> output = new Tuple2<String, Integer>(stringIntegerTuple2.f0, stringIntegerTuple2.f1 - currentState.value());
-                            System.out.println(output);
                             collector.collect(output);
                         }
                     }

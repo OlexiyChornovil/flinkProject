@@ -19,7 +19,6 @@ public class FilterListsFromList implements FilterFunction<List<String>> {
     @Override
     public boolean filter(List<String> value) throws Exception {
         String main_hash = null;
-        System.out.println(value);
         for(String hash : list) {
             for(String s: value) {
                 if(s.toLowerCase().contains(hash)){

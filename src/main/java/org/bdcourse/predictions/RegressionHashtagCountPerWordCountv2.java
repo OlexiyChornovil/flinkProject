@@ -9,6 +9,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
@@ -58,7 +59,7 @@ public class RegressionHashtagCountPerWordCountv2 {
                 .flatMap(new SelectTweetTextWithHashtagList())
                 .filter(new FilterListsFromListForRegression())
                 .flatMap(new HashtagWordCount())
-
+                .keyBy(0)
                 .process(new ProcessFunction<Tuple2<Integer, Integer>, Tuple4<Integer, Integer, Integer, Double>>() {
                     private ValueState<SimpleRegression> currentState;
 
@@ -66,7 +67,7 @@ public class RegressionHashtagCountPerWordCountv2 {
                     @Override
                     public void open(Configuration conf){
                         currentState = getRuntimeContext().getState(
-                                new ValueStateDescriptor<>("state", SimpleRegression.class));
+                                new ValueStateDescriptor<>("Mystate", SimpleRegression.class));
                     }
 
                     @Override
@@ -86,7 +87,7 @@ public class RegressionHashtagCountPerWordCountv2 {
                         out.collect(new Tuple4<Integer, Integer, Integer, Double>(value.f0, value.f1, predictionpoint, tmp));
                     }
                 });
-
+        stream.writeAsText(jobParameters.get("RegressionHashtagCountPerWordCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         stream.print();
         env.execute();
 
