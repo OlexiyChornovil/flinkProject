@@ -30,7 +30,7 @@ public class TwitterBatchLongestWord {
 				.flatMap(new LongestWord());
 
 
-		tweets.writeAsText(jobParameters.get("TwitterBatchWordCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
+		tweets.writeAsText(jobParameters.get("TwitterBatchLongestWordOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
 		//env.execute();
 	}

@@ -26,7 +26,7 @@ public class TwitterBatchHashtagCount {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
 		TwitterBatchHashtagCount t = new TwitterBatchHashtagCount();
-		ExecutionEnvironment env = t.getPipe();
+		t.getPipe();
 		//env.execute();
 	}
 
@@ -47,7 +47,7 @@ public class TwitterBatchHashtagCount {
 
 		tweets.writeAsText(jobParameters.get("TwitterBatchHashtagCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
-		return env;
+		return null;
 	}
 
 }

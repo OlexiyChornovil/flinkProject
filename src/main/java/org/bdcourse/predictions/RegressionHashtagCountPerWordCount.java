@@ -41,8 +41,7 @@ public class RegressionHashtagCountPerWordCount {
 
         regression.addData(data);
         //regression data from the batch-computation
-        Double intercept = regression.getIntercept();
-        Double slope = regression.getSlope();
+
 
         //System.out.println(intercept);
         //System.out.println(slope);
@@ -67,7 +66,8 @@ public class RegressionHashtagCountPerWordCount {
                 .process(new ProcessFunction<Tuple2<Integer, Integer>, Tuple4<Integer, Integer, Integer, Double>>() {
                     @Override
                     public void processElement(Tuple2<Integer, Integer> value, Context context, Collector<Tuple4<Integer, Integer, Integer, Double>> out) throws Exception {
-
+                        Double intercept = regression.getIntercept();
+                        Double slope = regression.getSlope();
                         Double tmp = (intercept + slope * value.f0);
                         Integer predictionpoint = tmp.intValue();
                         double[] d = new double[1];

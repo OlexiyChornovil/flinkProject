@@ -5,6 +5,7 @@ import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.utils.ParameterTool;
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction;
@@ -38,7 +39,7 @@ public class CompareRetweetCountv2 {
                 .flatMap(new SelectHashtagWithRetweetCount())
                 .filter(new FilterTweetsWithRetweetsFromList());
 
-        stream.connect(batch)
+        DataStream<Tuple2<String, Integer>> finalstream =  stream.connect(batch)
                 .keyBy(0, 0)
                 .flatMap(new RichCoFlatMapFunction<Tuple2<String, Integer>, Tuple2<String, Integer>, Tuple2<String, Integer>>() {
                     private Integer batchValue=0;
@@ -52,7 +53,9 @@ public class CompareRetweetCountv2 {
                     public void flatMap1(Tuple2<String, Integer> stringIntegerTuple2, Collector<Tuple2<String, Integer>> collector) throws Exception {
                         collector.collect(new Tuple2<String, Integer>(stringIntegerTuple2.f0, stringIntegerTuple2.f1-batchValue));
                     }
-                }).print();
+                });
+        finalstream.print();
+        finalstream.writeAsText(jobParameters.get("CompareRetweetCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         env.execute();
 
     }

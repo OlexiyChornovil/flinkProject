@@ -14,7 +14,8 @@ public class MovingAverageProcessv2 extends ProcessFunction<Tuple2<String, Integ
     Integer amount=0;
     Integer sum=0;
 
-    private ValueState<Integer> currentState;
+    private ValueState<Integer> amountState;
+    private ValueState<Integer> sumState;
 
 
     public MovingAverageProcessv2(Integer amount, Integer sum){
@@ -25,19 +26,26 @@ public class MovingAverageProcessv2 extends ProcessFunction<Tuple2<String, Integ
 
     @Override
     public void open(Configuration conf) throws Exception{
-        currentState = getRuntimeContext().getState(
+        amountState = getRuntimeContext().getState(
                 new ValueStateDescriptor<>("Mystate", Integer.class));
+        sumState = getRuntimeContext().getState(
+                new ValueStateDescriptor<>("Mystate2", Integer.class));
+
     }
 
     @Override
     public void processElement(Tuple2<String, Integer> value, Context context, Collector<Tuple3<String, Integer, Double>> out) throws Exception {
-
-        Double average = ((double)sum)/((double)amount);
+        if (amountState.value() == null){
+            amountState.update(this.amount);
+            sumState.update(this.sum);
+        }
+        Double average = ((double)sumState.value())/((double)amountState.value());
         Integer intAverage = average.intValue();
 
-
-        amount+=1;
-        sum+= value.f1;
+        Integer tmp1 = amountState.value() + 1;
+        amountState.update(tmp1);
+        Integer tmp2 = sumState.value() + value.f1;
+        sumState.update(tmp2);
         out.collect(new Tuple3<String, Integer, Double>(value.f0, value.f1, average));
     }
 
