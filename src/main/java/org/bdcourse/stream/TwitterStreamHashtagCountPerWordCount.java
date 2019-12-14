@@ -32,7 +32,7 @@ public class TwitterStreamHashtagCountPerWordCount {
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 		if(jobParameters.get("debug").equals("true")){
 			System.out.println("DEBUG ON");
-			streamSource = env.readTextFile(jobParameters.get("TwitterStreamHashtagCountPerWordCountBatchInput"));
+			streamSource = env.readTextFile(jobParameters.get("TwitterBatchHashtagCoutPerWordCountInput"));
 		}
 		else{
 			TwitterSource twitterSource = TwitterSourceDelivery.getTwitterConnection();
@@ -45,7 +45,7 @@ public class TwitterStreamHashtagCountPerWordCount {
 				.filter(new FilterListsFromListForRegression())
 				.flatMap(new HashtagWordCount());
 
-		tweets.writeAsText(jobParameters.get("TwitterStreamHashtagCountPerWordCountStreamOutput"), WriteMode.OVERWRITE).setParallelism(1);
+		tweets.writeAsText(jobParameters.get("TwitterStreamHashtagCountPerWordCountOutput"), WriteMode.OVERWRITE).setParallelism(1);
 		tweets.print();
 		return env;
 	}
