@@ -8,6 +8,10 @@ The folowing Metrics were implemented for Stream and Batch case:
 - Count the amount of Retweets for a tweet
 - Count of Words in a tweet
 
+Update: I created an additional metric, which calculates the amount of words and the amount 
+of hashtags in the tweet named TwitterBatchHashtagCoutPerWordCount. This one is basically used in order 
+to be able to process regression on already calculated data and to not recalculate the batch.
+
 All these metrics are applied to the tweets, that contain one of the following Hashtags:
 -  "china"
 -  "usa"
@@ -92,7 +96,8 @@ It will generate the tweets (not completely legit ones, but these have all the p
         a) the amount of words in a tweet
         b) the amount of hashtags in a tweet
         c) the predicted integer amount of hashtags in a tweet
-        d) the predicted decimal amount of hashtags in a tweet (in order to observe the direction of how the predicted value changes) 
+        d) the predicted decimal amount of hashtags in a tweet (in order to observe the direction of how the predicted value changes)
+     
     Another two prediction jobs compute the moving average of WordCount and HashtagCount. Analogous to the regression, 
     the batch data is processed first and then the amount of tweets and sum of the hashtags/words of tweets is computed and 
     then these data are being used to compute the average. It delivers a tuple of three with
@@ -103,6 +108,9 @@ It will generate the tweets (not completely legit ones, but these have all the p
         
     All predictions are being updated with each new data point from the stream.
     
+    Update: Additionally, I created a "v3", because previously, my jobs did recalculate the Batched data,
+                and it came to my attention, that I should probably also be able to apply predictions on already processed data.
+    
 ### youtube link to my presentation
 Unfortunatly my video Capture died few times. Also I did find at one point that I was using old version of my project for one file.
 I am very sorry for this. Hopefully I could explain and show everything I need.
@@ -112,3 +120,11 @@ Part 1: https://youtu.be/obX3q-ArukM
 Part 2: https://youtu.be/NVe-JwUDCVo
 
 part 3: https://youtu.be/UDVB1jNMPdc
+
+part 4: https://youtu.be/Qn1PSBfZ86s
+
+Update: As I finished my video capture, I asked one of my friends, what they thought about it, and 
+we came to the conclusion, that my regressions wouldn't conform to the submission guidelines.
+As such, I created a new metric, TwitterBatchHashtagCoutPerWordCount, which does compute the tuple
+of words and hashtag counts. With this, I now calculate the regression based on the already 
+processed data, and do not recalculate it. Same goes with all "v3" in the prediciton Package.
