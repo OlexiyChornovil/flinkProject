@@ -104,4 +104,11 @@ It will generate the tweets (not completely legit ones, but these have all the p
     All predictions are being updated with each new data point from the stream.
     
 ### youtube link to my presentation
-not present yet
+Unfortunatly my video Capture died few times. Also I did find at one point that I was using old version of my project for one file.
+I am very sorry for this. Hopefully I could explain and show everything I need.
+
+Part 1: https://youtu.be/obX3q-ArukM
+
+Part 2: https://youtu.be/NVe-JwUDCVo
+
+part 3: https://youtu.be/UDVB1jNMPdc
