@@ -37,7 +37,7 @@ public class MovingAverageHashtagCountv3 {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         if(jobParameters.get("debug").equals("true")){
             System.out.println("DEBUG ON");
-            streamSource = env.readTextFile(jobParameters.get("RegressionHashtagCountPerWordCountStreamInput"));
+            streamSource = env.readTextFile(jobParameters.get("MovingAverageHashtagCountStreamInput"));
         }
         else{
             TwitterSource twitterSource = TwitterSourceDelivery.getTwitterConnection();

@@ -17,7 +17,7 @@ public class TwitterBatchHashtagCoutPerWordCount {
         ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
-        DataSet<String> tweetText = env.readTextFile(jobParameters.get("TwitterBatchLikeCountInput"));
+        DataSet<String> tweetText = env.readTextFile(jobParameters.get("TwitterBatchHashtagCoutPerWordCountInput"));
 
         DataSet<Tuple2<Integer, Integer>> tweets = tweetText
                 .flatMap(new SelectTweetTextWithHashtagList())

@@ -39,7 +39,7 @@ public class MovingAverageHashtagCount {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         if(jobParameters.get("debug").equals("true")){
             System.out.println("DEBUG ON");
-            streamSource = env.readTextFile(jobParameters.get("RegressionHashtagCountPerWordCountStreamInput"));
+            streamSource = env.readTextFile(jobParameters.get("MovingAverageHashtagCountStreamInput"));
         }
         else{
             TwitterSource twitterSource = TwitterSourceDelivery.getTwitterConnection();
@@ -64,7 +64,7 @@ public class MovingAverageHashtagCount {
 
     private static List<Tuple2<String, Integer>> getBatchResults(ParameterTool jobParameters) throws Exception {
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-        DataSet<String> tweetText = env.readTextFile(jobParameters.get("MovingAverageWordCountInput"));
+        DataSet<String> tweetText = env.readTextFile(jobParameters.get("MovingAverageHashtagCountBatchInput"));
 
         DataSet<Tuple2<String, Integer>> tweets = tweetText
                 .filter(new TweetContainingHashtag())
