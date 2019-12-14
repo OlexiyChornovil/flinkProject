@@ -16,8 +16,8 @@ All these metrics are applied to the tweets, that contain one of the following H
 -  "ukraine"
 
 ### Visualisation
-At first I tried to implement elasticsearch/kibana visualisation, but unforetunalty
-I wasn'T very successful with it. Thus I decided to simply print and save as files all the output of my jobs.
+At first I tried to implement elasticsearch/kibana visualisation, but unfortunately
+I wasn't very successful with it. Thus I decided to simply print and save as files all the output of my jobs.
 
 ### How to run
 You need to import the pom.xml into Intellij and then select the job you want to run.
@@ -51,12 +51,12 @@ It will generate the tweets (not completely legit ones, but these have all the p
 ### What/and how to run the jobs after the setup
 - **milestone 1**  Data collection for storage and analysis from twitter in real time
 
-    for this one, you need to run the BatchCollector from the package stream.
+    For this one, you need to run the BatchCollector from the package stream.
     This job simply collects all the incoming tweets. 
     
 - **milestone 2**  Online analysis of the selected hashtags (5 hashtags) for the selected metrics (5 metrics)
 
-    for this one, you can run any of the classes in the package stream except for BatchCollector.
+    For this one, you can run any of the classes in the package stream except for BatchCollector.
     I.e. you can take TwitterStreamHashtagCount,
                       TwitterStreamLikeCount,
                       TwitterStreamLongestWord,
@@ -65,7 +65,7 @@ It will generate the tweets (not completely legit ones, but these have all the p
                       
 - **milestone 3**  Offline analysis of the hashtags (same hashtags/metrics as for milestone 2)
 
-    this is the same as milestone 2, except you can take any class from the package batch
+    This is the same as milestone 2, except you can take any class from the package batch
     
 - **milestone 4**  Online comparison of the online statistics with the offline ones
 
