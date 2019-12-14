@@ -76,14 +76,17 @@ public class RegressionHashtagCountPerWordCountv2 {
                         if (currentState.value() == null){
                             currentState.update(regression);
                         }
-                        Double inter = regression.getIntercept();
-                        Double sl = regression.getSlope();
+                        Double inter = currentState.value().getIntercept();
+                        Double sl = currentState.value().getSlope();
 
-                        Double tmp = (intercept + slope * value.f0);
+                        Double tmp = (inter + sl * value.f0);
                         Integer predictionpoint = tmp.intValue();
                         double[] d = new double[1];
                         d[0] = value.f0;
-                        regression.addObservation(d, value.f1);
+                        SimpleRegression r = currentState.value();
+                        r.addObservation(d, value.f1);
+                        currentState.update(r);
+                        //regression.addObservation(d, value.f1);
                         out.collect(new Tuple4<Integer, Integer, Integer, Double>(value.f0, value.f1, predictionpoint, tmp));
                     }
                 });
