@@ -9,22 +9,24 @@ import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.twitter.TwitterSource;
-import org.bdcourse.filters.FilterListsFromList;
 import org.bdcourse.filters.FilterTweetsFromList;
 import org.bdcourse.filters.TweetContainingHashtag;
-import org.bdcourse.maps.HashtagSelect;
-import org.bdcourse.maps.SelectTweetHashtags;
 import org.bdcourse.maps.SelectTweetsWithHashtags;
 import org.bdcourse.maps.WordCount;
-import org.bdcourse.process.MovingAverageProcess;
+import org.bdcourse.process.MovingAverageProcessv2;
 import org.bdcourse.source.TwitterSourceDelivery;
+import scala.util.parsing.combinator.testing.Str;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MovingAverageWordCount {
+public class MovingAverageWordCountv3 {
     public static void main(String[] args) throws Exception {
         ParameterTool jobParameters = ParameterTool.fromPropertiesFile("src/main/resources/JobConfig.properties");
-        List<Tuple2<String, Integer>> batchData = getBatchResults(jobParameters);
+        List<Tuple2<String, Integer>> batchData = readBatch("./data/TwitterBatchWordCountOutput");
 
         Integer amount = batchData.size();
         Integer sum = 0;
@@ -50,24 +52,35 @@ public class MovingAverageWordCount {
                 .flatMap(new SelectTweetsWithHashtags())
                 .filter(new FilterTweetsFromList())
                 .flatMap(new WordCount())
+                .keyBy(0)
+                //.process(new MovingAverageProcessv2());
+                .process(new MovingAverageProcessv2(amount, sum));
 
-                .process(new MovingAverageProcess(amount, sum));
         stream.writeAsText(jobParameters.get("MovingAverageWordCountOutput"), FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         stream.print();
         env.execute();
 
     }
 
-
-    private static List<Tuple2<String, Integer>> getBatchResults(ParameterTool jobParameters) throws Exception {
-        ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-        DataSet<String> tweetText = env.readTextFile(jobParameters.get("MovingAverageHashtagCountInput"));
-
-        DataSet<Tuple2<String, Integer>> tweets = tweetText
-                .filter(new TweetContainingHashtag())
-                .flatMap(new SelectTweetsWithHashtags())
-                .filter(new FilterTweetsFromList())
-                .flatMap(new WordCount());
-        return tweets.collect();
+    public static List<Tuple2<String, Integer>> readBatch(String path) throws Exception {
+        BufferedReader reader;
+        List<Tuple2<String, Integer>> list = new ArrayList<>();
+        try {
+            reader = new BufferedReader(new FileReader(path));
+            String line = reader.readLine();
+            while (line != null) {
+                line = line.replace("(", "");
+                line = line.replace(")", "");
+                String[] parts = line.split(",");
+                Tuple2<String, Integer> t = new Tuple2<String, Integer>(parts[0], Integer.parseInt(parts[1]));
+                list.add(t);
+                // read next line
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

@@ -61,7 +61,7 @@ public class MovingAverageWordCountv2 {
 
     private static List<Tuple2<String, Integer>> getBatchResults(ParameterTool jobParameters) throws Exception {
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-        DataSet<String> tweetText = env.readTextFile(jobParameters.get("RegressionHashtagCountPerWordCountBatchInput"));
+        DataSet<String> tweetText = env.readTextFile(jobParameters.get("MovingAverageHashtagCountInput"));
 
         DataSet<Tuple2<String, Integer>> tweets = tweetText
                 .filter(new TweetContainingHashtag())
